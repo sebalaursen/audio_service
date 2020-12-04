@@ -51,4 +51,5 @@ enum MediaAction {
     // Non-standard
     ASeekBackward,
     ASeekForward,
+    ABookmark
 };
