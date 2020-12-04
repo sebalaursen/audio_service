@@ -48,6 +48,7 @@ enum MediaAction {
   setShuffleMode,
   seekBackward,
   seekForward,
+  bookmark,
 }
 
 /// The different states during audio processing.
@@ -489,6 +490,13 @@ class MediaControl {
     androidIcon: 'drawable/audio_service_fast_forward',
     label: 'Fast Forward',
     action: MediaAction.fastForward,
+  );
+
+  /// A iOS default control for [MediaAction.bookmark].
+  static final bookmark = MediaControl(
+    androidIcon: '',
+    label: 'Fast Forward',
+    action: MediaAction.bookmark,
   );
 
   /// A reference to an Android icon resource for the control (e.g.
@@ -1342,6 +1350,9 @@ class AudioServiceBackground {
           case 'onClose':
             await _task.onClose();
             break;
+          case 'onBookmark':
+            await _task.onBookmark();
+            break;
           default:
             if (call.method.startsWith(_CUSTOM_PREFIX)) {
               final result = await _task.onCustomAction(
@@ -1864,6 +1875,8 @@ abstract class BackgroundAudioTask {
   /// away while playback is paused (but it will also allow the operating system
   /// to kill your service at any time to free up resources).
   Future<void> onClose() => onStop();
+
+  Future<void> onBookmark() async {}
 
   void _setParams({
     Duration fastForwardInterval,

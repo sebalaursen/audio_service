@@ -156,6 +156,7 @@ static MPMediaItemArtwork* artwork = nil;
             commandCenter.changeShuffleModeCommand,
             commandCenter.seekBackwardCommand,
             commandCenter.seekForwardCommand,
+            commandCenter.bookmarkCommand,
         ];
         [commandCenter.changePlaybackRateCommand setEnabled:YES];
         [commandCenter.togglePlayPauseCommand setEnabled:YES];
@@ -172,6 +173,7 @@ static MPMediaItemArtwork* artwork = nil;
         [commandCenter.likeCommand setEnabled:NO];
         [commandCenter.dislikeCommand setEnabled:NO];
         [commandCenter.bookmarkCommand setEnabled:NO];
+//        [commandCenter.bookmarkCommand addTarget:self action:@selector(bookmark:)];
         [self updateControls];
 
         // Params
@@ -282,6 +284,8 @@ static MPMediaItemArtwork* artwork = nil;
         [backgroundChannel invokeMethod:@"onSeekForward" arguments:@[call.arguments] result: result];
     } else if ([@"seekBackward" isEqualToString:call.method]) {
         [backgroundChannel invokeMethod:@"onSeekBackward" arguments:@[call.arguments] result: result];
+    } else if ([@"bookmark" isEqualToString:call.method]) {
+        [backgroundChannel invokeMethod:@"onBookmark" arguments:@[call.arguments] result: result];
     } else if ([@"setState" isEqualToString:call.method]) {
         long long msSinceEpoch;
         if (call.arguments[7] != [NSNull null]) {
@@ -395,7 +399,7 @@ static MPMediaItemArtwork* artwork = nil;
 }
 
 - (void) updateControls {
-    for (enum MediaAction action = AStop; action <= ASeekForward; action++) {
+    for (enum MediaAction action = AStop; action <= ABookmark; action++) {
         [self updateControl:action];
     }
     _controlsUpdated = YES;
@@ -514,6 +518,13 @@ static MPMediaItemArtwork* artwork = nil;
                 [commandCenter.seekForwardCommand removeTarget:nil];
             }
             break;
+        case ABookmark:
+            if (enable) {
+                [commandCenter.bookmarkCommand addTarget:self action:@selector(bookmark:)];
+            } else {
+                [commandCenter.bookmarkCommand removeTarget:nil];
+            }
+            break;
     }
 }
 
@@ -570,6 +581,12 @@ static MPMediaItemArtwork* artwork = nil;
     NSLog(@"seekBackward");
     BOOL begin = event.type == MPSeekCommandEventTypeBeginSeeking;
     [backgroundChannel invokeMethod:@"onSeekBackward" arguments:@[@(begin)]];
+    return MPRemoteCommandHandlerStatusSuccess;
+}
+
+- (MPRemoteCommandHandlerStatus) bookmark: (MPSeekCommandEvent *) event {
+    NSLog(@"bookmark");
+    [backgroundChannel invokeMethod:@"onBookmark" arguments:nil];
     return MPRemoteCommandHandlerStatusSuccess;
 }
 
