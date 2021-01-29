@@ -1393,6 +1393,9 @@ class AudioServiceBackground {
         return await _task.onSetSpeed(speed);
       case 'onTaskRemoved':
         return await _task.onTaskRemoved();
+      case 'onBookmark':
+        await _task.onBookmark();
+        break;
       case 'onClose':
         return await _task.onClose();
       default:
