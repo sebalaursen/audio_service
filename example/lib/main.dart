@@ -357,7 +357,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
     // Load and broadcast the queue
     AudioServiceBackground.setQueue(queue);
     try {
-      await _player.load(ConcatenatingAudioSource(
+      await _player.setAudioSource(ConcatenatingAudioSource(
         children:
             queue.map((item) => AudioSource.uri(Uri.parse(item.id))).toList(),
       ));
@@ -386,6 +386,8 @@ class AudioPlayerTask extends BackgroundAudioTask {
         : AudioProcessingState.skippingToPrevious;
     // This jumps to the beginning of the queue item at newIndex.
     _player.seek(Duration.zero, index: newIndex);
+    // Demonstrate custom events.
+    AudioServiceBackground.sendCustomEvent('skip to $newIndex');
   }
 
   @override
@@ -474,7 +476,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
   AudioProcessingState _getProcessingState() {
     if (_skipState != null) return _skipState;
     switch (_player.processingState) {
-      case ProcessingState.none:
+      case ProcessingState.idle:
         return AudioProcessingState.stopped;
       case ProcessingState.loading:
         return AudioProcessingState.connecting;

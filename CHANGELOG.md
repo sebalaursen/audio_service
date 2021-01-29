@@ -1,3 +1,23 @@
+## 0.16.2
+
+* Fix positionStream bug when seek is interrupted by onStop.
+* Fix JS name clash for MediaMetadata.
+* Update NowPlayingInfo speed correctly on iOS (@ryotayama).
+
+## 0.16.1
+
+* Fix bug in start() when using HttpOverrides.
+
+## 0.16.0
+
+* setState parameters default to previous state.
+* Change updateTime from Duration to DateTime.
+* Rename newStartRating to newStarRating.
+* Declare type of MediaItem.extras (@hacker1024).
+* Unit tests.
+* Fix compile error on macOS.
+* Update dependencies.
+
 ## 0.15.3
 
 * Add positionStream and runningStream.
