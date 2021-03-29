@@ -1,3 +1,12 @@
+## 0.17.0
+
+* Null safety.
+* Change artUri type from String to Uri.
+
+## 0.16.2+1
+
+* Mention upcoming 0.18.0 release in README.
+
 ## 0.16.2
 
 * Fix positionStream bug when seek is interrupted by onStop.
